@@ -1,4 +1,5 @@
 ```bash
+# on a vm with 100 GB space
 sudo apt update
 sudo apt install ffmpeg
 git clone https://github.com/PhilSad/DINet/
@@ -7,11 +8,25 @@ cd DINet
 export VIDEO_NAME=ariel_walking
 wget https://storage.googleapis.com/share-kollai/${VIDEO_NAME}.mp4
 ffmpeg -i ${VIDEO_NAME}.mp4 -filter:v "fps=fps=25" -c:a copy ${VIDEO_NAME}_25.mp4
+ffmpeg -i ${VIDEO_NAME}_25.mp4 -vn -acodec libmp3lame -q:a 2 ${VIDEO_NAME}_25.mp3
 
-docker run --rm -v "$PWD:/mnt" -it algebr/openface -c "cp /mnt/${VIDEO_NAME}_25.mp4 /tmp/video.mp4 && build/bin/FeatureExtraction -f /tmp/video.mp4 -2Dfp -out_dir /tmp && cp /tmp/video.csv /mnt/${VIDEO_NAME}_25.csv" 
+docker run --rm -v "$PWD:/mnt" -it algebr/openface -c "cp /mnt/${VIDEO_NAME}_25.mp4 /tmp/video.mp4 && build/bin/FeatureExtraction -f /tmp/video.mp4 -2Dfp -out_dir /tmp && cp /tmp/video.csv /mnt/${VIDEO_NAME}_25.csv"
+
+conda create -n py39 python=3.9
+conda activate py39
+pip install -r requirements.txt
+pip install gdown
+gdown 1FHpYJqGrIKsItG313aokXes03qJxFyxg
+unzip asserts.zip
+
+# run lipsync
+docker run --rm --gpus 'device=0' -v $PWD:/app -it dinet python3 inference.py --mouth_region_size=256 \
+--source_video_path=${VIDEO_NAME}_25.mp4 \
+--driving_audio_path=${VIDEO_NAME}_25.wav \
+--source_openface_landmark_path=${VIDEO_NAME}_25.csv \
+--pretrained_clip_DINet_path=./asserts/clip_training_DINet_256mouth.pth  
 
 ```
-
 
 
 # DINet: Deformation Inpainting Network for Realistic Face Visually Dubbing on High Resolution Video (AAAI2023)
