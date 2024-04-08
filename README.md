@@ -1,3 +1,19 @@
+```bash
+sudo apt update
+sudo apt install ffmpeg
+git clone https://github.com/PhilSad/DINet/
+cd DINet
+
+export VIDEO_NAME=ariel_walking
+wget https://storage.googleapis.com/share-kollai/${VIDEO_NAME}.mp4
+ffmpeg -i ${VIDEO_NAME}.mp4 -filter:v "fps=fps=25" -c:a copy ${VIDEO_NAME}_25.mp4
+
+docker run --rm -v "$PWD:/mnt" -it algebr/openface -c "cp /mnt/${VIDEO_NAME}_25.mp4 /tmp/video.mp4 && build/bin/FeatureExtraction -f /tmp/video.mp4 -2Dfp -out_dir /tmp && cp /tmp/video.csv /mnt/${VIDEO_NAME}_25.csv" 
+
+```
+
+
+
 # DINet: Deformation Inpainting Network for Realistic Face Visually Dubbing on High Resolution Video (AAAI2023)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/178c6b3ec0074af7a2dcc9ef26450e75.png)
 [Paper](https://fuxivirtualhuman.github.io/pdf/AAAI2023_FaceDubbing.pdf) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     [demo video](https://www.youtube.com/watch?v=UU344T-9h7M&t=6s)  &nbsp;&nbsp;&nbsp;&nbsp; Supplementary materials
