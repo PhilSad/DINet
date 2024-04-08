@@ -22,7 +22,7 @@ unzip asserts.zip
 # run lipsync
 docker run --rm --gpus 'device=0' -v $PWD:/app -it dinet python3 inference.py --mouth_region_size=256 \
 --source_video_path=${VIDEO_NAME}_25.mp4 \
---driving_audio_path=${VIDEO_NAME}_25.wav \
+--driving_audio_path=${VIDEO_NAME}_25.mp3 \
 --source_openface_landmark_path=${VIDEO_NAME}_25.csv \
 --pretrained_clip_DINet_path=./asserts/clip_training_DINet_256mouth.pth  
 
